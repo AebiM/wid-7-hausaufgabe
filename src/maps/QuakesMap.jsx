@@ -1,5 +1,12 @@
 import { renderToString } from "react-dom/server";
-import { CssBaseline, Link, Typography } from "@mui/material";
+import {
+  ToggleButton,
+  CssBaseline,
+  Link,
+  Typography,
+  ToggleButtonGroup,
+  Stack,
+} from "@mui/material";
 import { useEffect, useState } from "react";
 import L from "leaflet";
 import { MapContainer, TileLayer, GeoJSON, LayersControl } from "react-leaflet";
@@ -79,14 +86,51 @@ function Map() {
   useEffect(() => {
     const url = `${BASE_URL}/${minMag}_${timespan}.geojson`;
     fetchQuakeData(url);
-  }, []);
-
-  // console.log(quakesJson);
+  }, [minMag, timespan]);
 
   return (
     <>
       <CssBaseline />
       <Header />
+      <Stack direction="row">
+        <Stack direction="column">
+          <Typography variant="h7">select magnitude</Typography>
+          <ToggleButtonGroup
+            color="primary"
+            value={minMag}
+            exclusive
+            onChange={(event, newMinMag) => {
+              if (newMinMag !== null) setMinMag(newMinMag);
+            }}
+            aria-label="Minimum Magnitude"
+            style={{ marginRight: 10, marginBottom: 10, marginTop: 5 }}
+          >
+            <ToggleButton value="all">All</ToggleButton>
+            <ToggleButton value="1.0">M1.0+</ToggleButton>
+            <ToggleButton value="2.5">M2.5+</ToggleButton>
+            <ToggleButton value="4.5">M4.5+</ToggleButton>
+            <ToggleButton value="significant">Significant</ToggleButton>
+          </ToggleButtonGroup>
+        </Stack>
+        <Stack direction="column">
+          <Typography variant="h7">select timeperiod</Typography>
+          <ToggleButtonGroup
+            color="primary"
+            value={timespan}
+            exclusive
+            onChange={(event, newTimespan) => {
+              if (newTimespan !== null) setTimespan(newTimespan);
+            }}
+            aria-label="Timespan"
+            style={{ marginRight: 10, marginBottom: 10, marginTop: 5 }}
+          >
+            <ToggleButton value="hour">Last Hour</ToggleButton>
+            <ToggleButton value="day">Last Day</ToggleButton>
+            <ToggleButton value="week">Last Week</ToggleButton>
+            <ToggleButton value="month">Last Month</ToggleButton>
+          </ToggleButtonGroup>
+        </Stack>
+      </Stack>
       <MapContainer
         style={{ height: "100vh" }}
         center={[0, 0]}
@@ -96,13 +140,16 @@ function Map() {
         maxBoundsViscosity={1}
       >
         <LayersControl position="topright">
-          {BASE_LAYERS.map(baseLayer => (
+          {BASE_LAYERS.map((baseLayer) => (
             <LayersControl.BaseLayer
               key={baseLayer.url}
               checked={baseLayer.checked}
               name={baseLayer.name}
             >
-              <TileLayer attribution={baseLayer.attribution} url={baseLayer.url} />
+              <TileLayer
+                attribution={baseLayer.attribution}
+                url={baseLayer.url}
+              />
             </LayersControl.BaseLayer>
           ))}
 
