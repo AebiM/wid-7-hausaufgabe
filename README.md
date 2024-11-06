@@ -30,7 +30,7 @@ npm install && npm run dev
 
 **Beispiel Screenshot einer finalen App**
 
-![](/public/final-app-screenshot.png)
+![](/public/Hausaufgabe_Fertig.png)
 
 **Tipps**
 
